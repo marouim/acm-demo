@@ -1,0 +1,64 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: demo-networkpolicy
+  annotations:
+    policy.open-cluster-management.io/categories: Securité infrastructure
+    policy.open-cluster-management.io/controls: Configurations
+    policy.open-cluster-management.io/standards: Configurations
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: demo-networkpolicy
+        spec:
+          remediationAction: inform
+          severity: low
+          namespaceSelector:
+            include: 
+            - "rbac-*"
+          object-templates:
+
+          - complianceType: mustonlyhave
+            objectDefinition:
+
+              apiVersion: networking.k8s.io/v1
+              kind: NetworkPolicy
+              metadata:
+                name: default-1
+              spec:
+                podSelector:
+                  matchLabels:
+                    app: xyz
+                ingress:
+                  - from:
+                      - podSelector:
+                          matchLabels:
+                            role: abc
+                    ports:
+                      - protocol: TCP
+                        port: 8000
+
+          - complianceType: mustonlyhave
+            objectDefinition:
+
+              apiVersion: networking.k8s.io/v1
+              kind: NetworkPolicy
+              metadata:
+                name: default-2
+              spec:
+                podSelector:
+                  matchLabels:
+                    app: xyz
+                ingress:
+                  - from:
+                      - podSelector:
+                          matchLabels:
+                            role: abc
+                    ports:
+                      - protocol: TCP
+                        port: 9000
