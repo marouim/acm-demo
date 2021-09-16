@@ -1,0 +1,16 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PlacementBinding
+metadata:
+  name: demo-rbac
+
+placementRef:
+  name: demo-rbac
+  kind: PlacementRule
+  apiGroup: apps.open-cluster-management.io
+
+subjects:
+
+- name: demo-rbac
+  kind: Policy
+  apiGroup: policy.open-cluster-management.io
+

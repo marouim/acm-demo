@@ -1,0 +1,220 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: demo-rbac
+  annotations:
+    policy.open-cluster-management.io/categories: Securité infrastructure
+    policy.open-cluster-management.io/controls: Configurations
+    policy.open-cluster-management.io/standards: Configurations
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: demo-rbac-groups
+        spec:
+          remediationAction: inform
+          severity: low
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Group
+                apiVersion: user.openshift.io/v1
+                metadata:
+                  name: demo-rbac-developpeurs
+                users:
+                  - demo-rbac-dev
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Group
+                apiVersion: user.openshift.io/v1
+                metadata:
+                  name: demo-rbac-operations
+                users:
+                  - demo-rbac-ops
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Group
+                apiVersion: user.openshift.io/v1
+                metadata:
+                  name: demo-rbac-testeurs
+                users:
+                  - demo-rbac-tst
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: demo-rbac-roles-dev
+        spec:
+          remediationAction: inform
+          severity: low
+          namespaceSelector:
+            include: 
+            - "rbac-dev*"
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: RoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: demo-rbac-binding-developpeurs-dev-admin
+                subjects:
+                  - kind: Group
+                    name: demo-rbac-developpeurs
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: ClusterRole
+                  name: admin
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: demo-rbac-roles-prod
+        spec:
+          remediationAction: inform
+          severity: low
+          namespaceSelector:
+            include: 
+            - "rbac-prod*"
+          object-templates:
+
+            - complianceType: mustonlyhave
+              objectDefinition:
+
+                apiVersion: rbac.authorization.k8s.io/v1
+                kind: Role
+                metadata:
+                  name: prod-operations
+                rules:
+                - apiGroups:
+                  - ""
+                  resources:
+                  - secrets
+                  verbs:
+                  - list
+                - apiGroups:
+                  - ""
+                  resources:
+                  - namespaces
+                  verbs:
+                  - get
+                - apiGroups:
+                  - ""
+                  - project.openshift.io
+                  resources:
+                  - projects
+                  verbs:
+                  - get
+                - apiGroups:
+                  - ""
+                  resources:
+                  - pods
+                  verbs:
+                  - get
+                  - list
+                  - watch
+                  - delete
+                - apiGroups:
+                  - apps
+                  resources:
+                  - controllerrevisions
+                  - daemonsets
+                  - daemonsets/status
+                  - deployments
+                  - deployments/scale
+                  - deployments/status
+                  - replicasets
+                  - replicasets/scale
+                  - replicasets/status
+                  - statefulsets
+                  - statefulsets/scale
+                  - statefulsets/status
+                  verbs:
+                  - get
+                  - list
+                  - watch
+                - apiGroups:
+                  - ""
+                  resources:
+                  - bindings
+                  - events
+                  - limitranges
+                  - namespaces/status
+                  - pods/log
+                  - pods/status
+                  - replicationcontrollers/status
+                  - resourcequotas
+                  - resourcequotas/status
+                  verbs:
+                  - get
+                  - list
+                  - watch
+                - apiGroups:
+                  - rbac.authorization.k8s.io
+                  resources:
+                  - "*"
+                  verbs:
+                  - get
+                  - list
+                  - watch
+                - apiGroups:
+                  - ""
+                  resources:
+                  - serviceaccounts
+                  verbs:
+                  - get
+                  - list
+                  - watch
+
+            - complianceType: mustonlyhave
+              objectDefinition:
+
+                kind: RoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: demo-rbac-binding-operations-prod-admin
+                subjects:
+                  - kind: Group
+                    name: demo-rbac-operations
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: Role
+                  name: prod-operations
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: demo-rbac-roles-preprod
+        spec:
+          remediationAction: inform
+          severity: low
+          namespaceSelector:
+            include: 
+            - "rbac-preprod*"
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: RoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: demo-rbac-binding-testeurs-preprod-admin
+                subjects:
+                  - kind: Group
+                    name: demo-rbac-testeurs
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: ClusterRole
+                  name: admin
