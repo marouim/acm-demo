@@ -14,6 +14,4 @@ metadata:
 spec:
   channel: acm-policies/acm-demo
   placement:
-    placementRef:
-      kind: PlacementRule
-      name: local-cluster
+    local: true
