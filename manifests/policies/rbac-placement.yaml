@@ -9,4 +9,4 @@ spec:
     type: ManagedClusterConditionAvailable
   clusterSelector:
     matchExpressions:
-      - {key: demo-rbac, operator: In, values: ["yes"]}
+      - {key: demo-acm, operator: In, values: ["yes"]}
