@@ -19,6 +19,8 @@ spec:
           remediationAction: inform
           severity: low
           namespaceSelector:
+            exclude:
+            - "openshift-"
             include: 
             - "rbac-*"
           object-templates:
@@ -62,3 +64,23 @@ spec:
                     ports:
                       - protocol: TCP
                         port: 9000
+
+          - complianceType: mustonlyhave
+            objectDefinition:
+
+              apiVersion: networking.k8s.io/v1
+              kind: NetworkPolicy
+              metadata:
+                name: default-3
+              spec:
+                podSelector:
+                  matchLabels:
+                    app: xyz
+                ingress:
+                  - from:
+                      - podSelector:
+                          matchLabels:
+                            role: abc
+                    ports:
+                      - protocol: TCP
+                        port: 6565
