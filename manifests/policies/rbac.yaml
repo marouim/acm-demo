@@ -49,6 +49,16 @@ spec:
                 users:
                   - demo-rbac-tst
 
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Group
+                apiVersion: user.openshift.io/v1
+                metadata:
+                  name: demo-rbac-tenant3
+                users:
+                  - demo-rbac-tenant3
+
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -217,6 +227,33 @@ spec:
                 subjects:
                   - kind: Group
                     name: demo-rbac-testeurs
+                roleRef:
+                  apiGroup: rbac.authorization.k8s.io
+                  kind: ClusterRole
+                  name: admin
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: demo-rbac-roles-tenant3
+        spec:
+          remediationAction: inform
+          severity: low
+          namespaceSelector:
+            include: 
+            - "*-tenant3"
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: RoleBinding
+                apiVersion: rbac.authorization.k8s.io/v1
+                metadata:
+                  name: demo-rbac-binding-tenant3-admin
+                subjects:
+                  - kind: Group
+                    name: demo-rbac-tenant3
                 roleRef:
                   apiGroup: rbac.authorization.k8s.io
                   kind: ClusterRole
