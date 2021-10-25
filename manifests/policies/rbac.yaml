@@ -10,6 +10,89 @@ spec:
   remediationAction: enforce
   disabled: false
   policy-templates:
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: demo-rbac-projects
+        spec:
+          remediationAction: inform
+          severity: low
+          object-templates:
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Project
+                apiVersion: project.openshift.io/v1
+                metadata:
+                  name: dev-tenant1
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Project
+                apiVersion: project.openshift.io/v1
+                metadata:
+                  name: dev-tenant2
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Project
+                apiVersion: project.openshift.io/v1
+                metadata:
+                  name: dev-tenant3
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Project
+                apiVersion: project.openshift.io/v1
+                metadata:
+                  name: prod-tenant1
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Project
+                apiVersion: project.openshift.io/v1
+                metadata:
+                  name: prod-tenant2
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Project
+                apiVersion: project.openshift.io/v1
+                metadata:
+                  name: prod-tenant3
+
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Project
+                apiVersion: project.openshift.io/v1
+                metadata:
+                  name: qa-tenant1
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Project
+                apiVersion: project.openshift.io/v1
+                metadata:
+                  name: qa-tenant2
+
+            - complianceType: musthave
+              objectDefinition:
+
+                kind: Project
+                apiVersion: project.openshift.io/v1
+                metadata:
+                  name: qa-tenant3
+
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -58,6 +141,7 @@ spec:
                   name: demo-rbac-tenant3
                 users:
                   - demo-rbac-tenant3
+
 
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
