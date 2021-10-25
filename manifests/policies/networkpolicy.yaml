@@ -89,7 +89,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: demo-networkpolicy-tenants
+          name: demo-networkpolicy-tenant1
         spec:
           remediationAction: inform
           severity: low
@@ -144,7 +144,7 @@ spec:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
         metadata:
-          name: demo-networkpolicy-tenants
+          name: demo-networkpolicy-tenant3
         spec:
           remediationAction: inform
           severity: low
