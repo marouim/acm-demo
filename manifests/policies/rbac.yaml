@@ -70,7 +70,7 @@ spec:
           namespaceSelector:
             include: 
             - "rbac-dev*"
-            - "dev-tenant-*"
+            - "dev-tenant*"
           object-templates:
             - complianceType: musthave
               objectDefinition:
@@ -98,7 +98,7 @@ spec:
           namespaceSelector:
             include: 
             - "rbac-prod*"
-            - "prod-tenant-*"
+            - "prod-tenant*"
           object-templates:
 
             - complianceType: mustonlyhave
@@ -215,7 +215,7 @@ spec:
           namespaceSelector:
             include: 
             - "rbac-preprod*"
-            - "qa-tenant-*"
+            - "qa-tenant*"
           object-templates:
             - complianceType: musthave
               objectDefinition:
