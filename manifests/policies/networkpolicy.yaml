@@ -23,7 +23,7 @@ spec:
             exclude:
             - "openshift-"
             include: 
-            - "*-tenant1"
+            - "tenant1-*"
           object-templates:
 
           - complianceType: mustonlyhave
@@ -78,7 +78,7 @@ spec:
             exclude:
             - "openshift-"
             include: 
-            - "*-tenant3"
+            - "tenant2-*"
           object-templates:
 
           - complianceType: mustonlyhave
@@ -87,7 +87,7 @@ spec:
               apiVersion: networking.k8s.io/v1
               kind: NetworkPolicy
               metadata:
-                name: tenant3-default1
+                name: tenant2-default1
               spec:
                 podSelector:
                   matchLabels:
@@ -107,7 +107,7 @@ spec:
               apiVersion: networking.k8s.io/v1
               kind: NetworkPolicy
               metadata:
-                name: tenant3-default2
+                name: tenant2-default2
               spec:
                 podSelector:
                   matchLabels:
@@ -127,7 +127,7 @@ spec:
               apiVersion: networking.k8s.io/v1
               kind: NetworkPolicy
               metadata:
-                name: tenant3-default3
+                name: tenant2-default3
               spec:
                 podSelector:
                   matchLabels:
@@ -147,7 +147,7 @@ spec:
               apiVersion: networking.k8s.io/v1
               kind: NetworkPolicy
               metadata:
-                name: tenant3-default4
+                name: tenant2-default4
               spec:
                 podSelector:
                   matchLabels:
