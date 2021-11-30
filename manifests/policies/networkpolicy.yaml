@@ -66,6 +66,26 @@ spec:
                       - protocol: TCP
                         port: 9000
 
+          - complianceType: mustonlyhave
+            objectDefinition:
+
+              apiVersion: networking.k8s.io/v1
+              kind: NetworkPolicy
+              metadata:
+                name: tenant1-default3
+              spec:
+                podSelector:
+                  matchLabels:
+                    app: xyz
+                ingress:
+                  - from:
+                      - podSelector:
+                          matchLabels:
+                            role: abc
+                    ports:
+                      - protocol: TCP
+                        port: 9004
+
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
