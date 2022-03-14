@@ -275,3 +275,23 @@ spec:
                     ports:
                       - protocol: TCP
                         port: 8977
+                        
+          - complianceType: mustonlyhave
+            objectDefinition:
+
+              apiVersion: networking.k8s.io/v1
+              kind: NetworkPolicy
+              metadata:
+                name: all-tenant-default-block-service-special-de-semaine
+              spec:
+                podSelector:
+                  matchLabels:
+                    app: xyz
+                ingress:
+                  - from:
+                      - podSelector:
+                          matchLabels:
+                            role: abc
+                    ports:
+                      - protocol: TCP
+                        port: 5675
