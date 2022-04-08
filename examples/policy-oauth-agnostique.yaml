@@ -1,0 +1,125 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: openshift-oauth
+  annotations:
+    policy.open-cluster-management.io/categories: Gestion des accès
+    policy.open-cluster-management.io/controls: Configurations
+    policy.open-cluster-management.io/standards: Configurations
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: oauth-openid-secret
+        spec:
+          remediationAction: enforce
+          severity: low
+          namespaceSelector:
+            include:
+            - "openshift-config"
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: v1
+              data:
+                clientSecret: ...OIDSECRET...
+              kind: Secret
+              metadata:
+                name: openid-client-secret
+                namespace: openshift-config
+              type: Opaque
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: oauth-configuration
+        spec:
+          remediationAction: enforce
+          severity: low
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: config.openshift.io/v1
+              kind: OAuth
+              metadata:
+                name: cluster
+                annotations:
+                  include.release.openshift.io/ibm-cloud-managed: 'true'
+                  include.release.openshift.io/self-managed-high-availability: 'true'
+                  include.release.openshift.io/single-node-developer: 'true'
+                  release.openshift.io/create-only: 'true'
+              spec:
+                identityProviders:
+                - mappingMethod: claim
+                  name: sso
+                  openID:
+                    claims:
+                      email:
+                      - email
+                      name:
+                      - name
+                      preferredUsername:
+                      - preferred_username
+                    clientID: openshift
+                    clientSecret:
+                      name: openid-client-secret
+                    extraScopes: []
+                    issuer: ...OAUTH..ISSUER...
+                  type: OpenID
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: cluster-admin-group
+        spec:
+          remediationAction: enforce
+          severity: low
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+                          
+              kind: Group
+              apiVersion: user.openshift.io/v1
+              metadata:
+                name: administrateurs
+              users:
+                - user1
+
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: cluster-admin-binding
+        spec:
+          remediationAction: enforce
+          severity: low
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+
+              kind: ClusterRoleBinding
+              apiVersion: rbac.authorization.k8s.io/v1
+              metadata:
+                name: administrateurs
+              subjects:
+                - kind: Group
+                  apiGroup: rbac.authorization.k8s.io
+                  name: administrateurs
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: ClusterRole
+                name: cluster-admin
