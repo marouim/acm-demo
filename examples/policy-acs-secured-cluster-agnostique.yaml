@@ -1,0 +1,196 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: Policy
+metadata:
+  name: acs-secured-cluster
+  annotations:
+    policy.open-cluster-management.io/categories: Securité infrastructure
+    policy.open-cluster-management.io/controls: Configurations
+    policy.open-cluster-management.io/standards: Configurations
+spec:
+  remediationAction: enforce
+  disabled: false
+  policy-templates:
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: acs-namespace
+        spec:
+          remediationAction: inform
+          severity: low
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                labels:
+                  kubernetes.io/metadata.name: stackrox
+                name: stackrox
+              spec:
+                finalizers:
+                - kubernetes
+
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: acs-operator
+        spec:
+          remediationAction: inform
+          severity: low
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: operators.coreos.com/v1alpha1
+              kind: Subscription
+              metadata:
+                labels:
+                  operators.coreos.com/rhacs-operator.openshift-operators: ""
+                name: rhacs-operator
+                namespace: openshift-operators
+              spec:
+                channel: latest
+                installPlanApproval: Automatic
+                name: rhacs-operator
+                source: redhat-operators
+                sourceNamespace: openshift-marketplace
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: acs-secret-bundle
+        spec:
+          remediationAction: inform
+          severity: low
+          namespaceSelector:
+            include: 
+            - "stackrox"
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: v1
+              kind: Secret
+              metadata:
+                annotations:
+                  init-bundle.stackrox.io/created-at: ""
+                  init-bundle.stackrox.io/expires-at: ""
+                  init-bundle.stackrox.io/id: ID
+                  init-bundle.stackrox.io/name: secured-clusters
+                creationTimestamp: null
+                name: collector-tls
+              stringData:
+                ca.pem: |
+                  -----BEGIN CERTIFICATE-----
+
+                  -----END CERTIFICATE-----
+                collector-cert.pem: |
+                  -----BEGIN CERTIFICATE-----
+
+                  -----END CERTIFICATE-----
+                collector-key.pem: |
+                  -----BEGIN EC PRIVATE KEY-----
+
+                  -----END EC PRIVATE KEY-----
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: v1
+              kind: Secret
+              metadata:
+                annotations:
+                  init-bundle.stackrox.io/created-at: ""
+                  init-bundle.stackrox.io/expires-at: ""
+                  init-bundle.stackrox.io/id: ID
+                  init-bundle.stackrox.io/name: secured-clusters
+                creationTimestamp: null
+                name: sensor-tls
+              stringData:
+                ca.pem: |
+                  -----BEGIN CERTIFICATE-----
+
+                  -----END CERTIFICATE-----
+                sensor-cert.pem: |
+                  -----BEGIN CERTIFICATE-----
+
+                  -----END CERTIFICATE-----
+                sensor-key.pem: |
+                  -----BEGIN EC PRIVATE KEY-----
+
+                  -----END EC PRIVATE KEY-----
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: v1
+              kind: Secret
+              metadata:
+                annotations:
+                  init-bundle.stackrox.io/created-at: ""
+                  init-bundle.stackrox.io/expires-at: ""
+                  init-bundle.stackrox.io/id: ID
+                  init-bundle.stackrox.io/name: secured-clusters
+                creationTimestamp: null
+                name: admission-control-tls
+              stringData:
+                admission-control-cert.pem: |
+                  -----BEGIN CERTIFICATE-----
+
+                  -----END CERTIFICATE-----
+                admission-control-key.pem: |
+                  -----BEGIN EC PRIVATE KEY-----
+
+                  -----END EC PRIVATE KEY-----
+                ca.pem: |
+                  -----BEGIN CERTIFICATE-----
+
+                  -----END CERTIFICATE-----
+
+    - objectDefinition:
+        apiVersion: policy.open-cluster-management.io/v1
+        kind: ConfigurationPolicy
+        metadata:
+          name: acs-secured-cluster
+        spec:
+          remediationAction: inform
+          severity: low
+          namespaceSelector:
+            include: 
+            - "stackrox"
+          object-templates:
+
+          - complianceType: musthave
+            objectDefinition:
+
+              apiVersion: platform.stackrox.io/v1alpha1
+              kind: SecuredCluster
+              metadata:
+                namespace: stackrox
+                name: stackrox-secured-cluster-services
+              spec:
+                clusterName: '{{ (lookup "config.openshift.io/v1" "Infrastructure" "default" "cluster").status.infrastructureName }}'
+                auditLogs:
+                  collection: Auto
+                centralEndpoint: 'name-of-cluster-acs-central:443'
+                admissionControl:
+                  bypass: BreakGlassAnnotation
+                  contactImageScanners: DoNotScanInline
+                  listenOnCreates: true
+                  listenOnEvents: true
+                  listenOnUpdates: true
+                  timeoutSeconds: 3
+                perNode:
+                  collector:
+                    collection: KernelModule
+                    imageFlavor: Regular
+                  taintToleration: TolerateTaints
