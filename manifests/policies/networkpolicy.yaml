@@ -161,26 +161,6 @@ spec:
                       - protocol: TCP
                         port: 9001
 
-          - complianceType: mustonlyhave
-            objectDefinition:
-
-              apiVersion: networking.k8s.io/v1
-              kind: NetworkPolicy
-              metadata:
-                name: tenant2-default4
-              spec:
-                podSelector:
-                  matchLabels:
-                    app: xyz
-                ingress:
-                  - from:
-                      - podSelector:
-                          matchLabels:
-                            role: abc
-                    ports:
-                      - protocol: TCP
-                        port: 9004
-
     - objectDefinition:
         apiVersion: policy.open-cluster-management.io/v1
         kind: ConfigurationPolicy
@@ -216,121 +196,13 @@ spec:
                       - protocol: TCP
                         port: 8000
 
-          - complianceType: mustonlyhave
-            objectDefinition:
 
-              apiVersion: networking.k8s.io/v1
-              kind: NetworkPolicy
-              metadata:
-                name: all-tenant-default-block-service
-              spec:
-                podSelector:
-                  matchLabels:
-                    app: xyz
-                ingress:
-                  - from:
-                      - podSelector:
-                          matchLabels:
-                            role: abc
-                    ports:
-                      - protocol: TCP
-                        port: 9000
 
-          - complianceType: mustonlyhave
-            objectDefinition:
 
-              apiVersion: networking.k8s.io/v1
-              kind: NetworkPolicy
-              metadata:
-                name: all-tenant-default-block-service-special
-              spec:
-                podSelector:
-                  matchLabels:
-                    app: xyz
-                ingress:
-                  - from:
-                      - podSelector:
-                          matchLabels:
-                            role: abc
-                    ports:
-                      - protocol: TCP
-                        port: 8999
 
-          - complianceType: mustonlyhave
-            objectDefinition:
 
-              apiVersion: networking.k8s.io/v1
-              kind: NetworkPolicy
-              metadata:
-                name: all-tenant-default-block-service-special-du-jour
-              spec:
-                podSelector:
-                  matchLabels:
-                    app: xyz
-                ingress:
-                  - from:
-                      - podSelector:
-                          matchLabels:
-                            role: abc
-                    ports:
-                      - protocol: TCP
-                        port: 8977
                         
-          - complianceType: mustonlyhave
-            objectDefinition:
 
-              apiVersion: networking.k8s.io/v1
-              kind: NetworkPolicy
-              metadata:
-                name: all-tenant-default-block-service-special-de-semaine
-              spec:
-                podSelector:
-                  matchLabels:
-                    app: xyz
-                ingress:
-                  - from:
-                      - podSelector:
-                          matchLabels:
-                            role: abc
-                    ports:
-                      - protocol: TCP
-                        port: 5675
 
-          - complianceType: mustonlyhave
-            objectDefinition:
 
-              apiVersion: networking.k8s.io/v1
-              kind: NetworkPolicy
-              metadata:
-                name: all-tenant-default-block-service-special-du-mois
-              spec:
-                podSelector:
-                  matchLabels:
-                    app: xyz
-                ingress:
-                  - from:
-                      - podSelector:
-                          matchLabels:
-                            role: abc
-                    ports:
-                      - protocol: TCP
-                        port: 9995
-          - complianceType: mustonlyhave
-            objectDefinition:
 
-              apiVersion: networking.k8s.io/v1
-              kind: NetworkPolicy
-              metadata:
-                name: all-tenant-default-block-service-special-de-lannee
-              spec:
-                podSelector:
-                  matchLabels:
-                    app: xyz
-                ingress:
-                  - from:
-                      - podSelector:
-                          matchLabels:
-                            role: abc
-                    ports:
-                      - protocol: TCP
-                        port: 9898
